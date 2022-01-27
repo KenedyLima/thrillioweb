@@ -15,6 +15,7 @@ public class StringUtil {
 	 */
 	public static String encodePassword(String password) {
 
+		StringBuilder buf = new StringBuilder();
 		if (password != null) {
 
 			byte[] unencodedPassword = password.getBytes();
@@ -33,7 +34,7 @@ public class StringUtil {
 			md.update(unencodedPassword);
 			// now calculate the hash
 			byte[] encodedPassword = md.digest();
-			StringBuilder buf = new StringBuilder();
+			
 			for (int i = 0; i < encodedPassword.length; i++) {
 				if ((encodedPassword[i] & 0xff) < 0x10) {
 					buf.append("0");
@@ -42,7 +43,6 @@ public class StringUtil {
 				}
 
 			}
-			System.out.println("returning password");
 			
 		}
 		return buf.toString();
