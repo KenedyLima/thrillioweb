@@ -9,15 +9,17 @@ import thrillio.project.entities.User;
 import thrillio.project.util.StringUtil;
 
 public class UserManager {
-	public static UserManager instance = new UserManager();
-	private static UserDao dao = new UserDao();
+	
+	private static UserManager instance = new UserManager();
+	private UserDao dao = UserDao.getInstance();
 
 	private UserManager() {
 	}
 
-	public List<User> getUsers() {
-		return dao.getUsers();
+	public User getUserById(long userId) {
+		return dao.getUserById(userId);
 	}
+	
 
 	public static UserManager getInstance() {
 		return instance;

@@ -12,11 +12,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import thrillio.project.constants.KidFriendlyStatus;
+import thrillio.project.entities.Book;
 import thrillio.project.entities.Bookmark;
 import thrillio.project.entities.User;
 import thrillio.project.managers.BookmarkManager;
+import thrillio.project.managers.UserManager;
 
-@WebServlet(urlPatterns = { "/bookmark", "/bookmark/mybooks", "/bookmark/save" })
+@WebServlet(urlPatterns = { "/bookmark", "/bookmark/mybooks", "/bookmark/save", "/bookmark/delete"})
 public class BookmarkController extends HttpServlet {
 	/*
 	 * private BookmarkController() {}
@@ -30,11 +32,10 @@ public class BookmarkController extends HttpServlet {
 	};
 
 	public void saveUserBookmark(User user, Bookmark bookmark) throws MalformedURLException, URISyntaxException {
-		BookmarkManager.saveUserBookmark(user, bookmark);
+		BookmarkManager.getInstance().saveUserBookmark(user, bookmark);
 	}
 
 	public void setKidFriendlyStatus(User user, KidFriendlyStatus kidFriendlyStatusDecision, Bookmark bookmark) {
-		// System.out.println("setKidFriendlyStatus - BookmarkController");
 		BookmarkManager.getInstance().setKidFriendlyStatus(user, kidFriendlyStatusDecision, bookmark);
 
 	}
@@ -47,27 +48,42 @@ public class BookmarkController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		System.out.print("BookmarkController request.getServletPath(): " + request.getServletPath());
-
 		if (request.getSession().getAttribute("userId") != null) {
 			long userId = (long) request.getSession().getAttribute("userId");
+			User user = UserManager.getInstance().getUserById(userId);
+			Collection<Bookmark> books =  BookmarkManager.getInstance().getBookmarks(Book.class, false, userId);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("");
+			
+			if (request.getServletPath().contains("save")) {
 
-			if (request.getServletPath().contains("mybooks")) {
-				Collection<Bookmark> books = BookmarkManager.getInstance().getBooks(true, userId);
-				System.out.println("\nmyBooks: " + books);
-				// System.out.println("\nBookmarkController: " + userId);
-				request.setAttribute("books", books);
-				request.getRequestDispatcher("/MyBooks.jsp").forward(request, response);
+				Bookmark bookmark = BookmarkManager.getInstance()
+						.getBookById(Long.parseLong(request.getParameter("bid")));
+				BookmarkManager.getInstance().saveUserBookmark(user, bookmark);
+				books = BookmarkManager.getInstance().getBookmarks(Book.class, true, userId);
+				dispatcher = request.getRequestDispatcher("/MyBooks.jsp");
 
-			} else if (request.getContextPath().contains("save")) {
+			} else if (request.getServletPath().contains("delete")) {
+				Bookmark bookmark = BookmarkManager.getInstance()
+						.getBookById(Long.parseLong(request.getParameter("bid")));
+				BookmarkManager.getInstance().deleteUserBookmark(user, bookmark);
+				books = BookmarkManager.getInstance().getBookmarks(Book.class, true, userId);
+				dispatcher = request.getRequestDispatcher("/MyBooks.jsp");
+			}
+
+			else if (request.getServletPath().contains("mybooks")) {
+				books = BookmarkManager.getInstance().getBookmarks(Book.class, true, userId);
+
+				dispatcher = request.getRequestDispatcher("/MyBooks.jsp");
 
 			} else {
-				Collection<Bookmark> list = BookmarkManager.getInstance().getBooks(false, userId);
-				System.out.println("LIST: " + list);
-				request.setAttribute("books", list);
-				request.getRequestDispatcher("/Browse.jsp").forward(request, response);
+				books = BookmarkManager.getInstance().getBookmarks(Book.class, false, userId);
+				dispatcher = request.getRequestDispatcher("/Browse.jsp");
 			}
-		} else {
+			request.setAttribute("books", books);
+			dispatcher.forward(request, response);
+		}
+
+		else {
 			request.getRequestDispatcher("/Login.jsp").forward(request, response);
 		}
 	}

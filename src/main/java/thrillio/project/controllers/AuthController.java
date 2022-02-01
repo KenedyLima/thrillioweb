@@ -18,23 +18,17 @@ public class AuthController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		System.out.print("request.getServletPath()" + request.getServletPath());
 		
 		if (!request.getServletPath().contains("logout")) {
-			System.out.println("CONTAINS LOGOUT");
 			String email = request.getParameter("email");
-			System.out.println(email);
 			
 			String password = request.getParameter("password");
-			System.out.println("PASSWORDDDDDDDDDDDD: " + password);
 			long userId = UserManager.getInstance().authenticate(email, password);
-			System.out.println("AuthController - USER IDddddd : " + userId);
-
+			
 			if (userId != -1) {
 
 				HttpSession session = request.getSession();
 				session.setAttribute("userId", userId);
-				System.out.println("SESSION WAS INITIATED");
 				request.getRequestDispatcher("bookmark/mybooks").forward(request, response);
 
 			} else {
@@ -44,7 +38,7 @@ public class AuthController extends HttpServlet {
 			request.getRequestDispatcher("/Login.jsp").forward(request, response);
 		}
 
-		// dispatcher.forward(request, response);
+
 
 	}
 

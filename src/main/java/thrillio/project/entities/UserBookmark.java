@@ -2,6 +2,12 @@ package thrillio.project.entities;
 
 public class UserBookmark {
 
+	public UserBookmark(User user, Bookmark bookmark) {
+		super();
+		this.user = user;
+		this.bookmark = bookmark;
+	}
+
 	private User user;
 	private Bookmark bookmark;
 

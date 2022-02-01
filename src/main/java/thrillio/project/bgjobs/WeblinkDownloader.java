@@ -19,7 +19,7 @@ import thrillio.project.util.IOUtil;
 
 public class WeblinkDownloader implements Runnable {
 
-	public static BookmarkDao dao = new BookmarkDao();
+	public static BookmarkDao dao = BookmarkDao.getInstance();
 
 	private final long TIME_FRAME = 3000000L;
 

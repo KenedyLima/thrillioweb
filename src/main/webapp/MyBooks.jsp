@@ -37,6 +37,8 @@
 					 Rating: <span style="color: #B13100;">${book.amazonRating}</span>
 					 <br><br>
 					 Publication Year: <span style="color: #B13100;">${book.publicationYear}</span>
+					 <br><br>
+					 <a href = "<%=request.getContextPath()%>/bookmark/delete?bid=${book.id}" style="font-size:18px;color:red;font-weight:bold;text-decoration:none">Delete</a>
 					</td>
 				  </tr>
 				  <tr>
