@@ -50,29 +50,42 @@ public class BookmarkController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/bookmarks");
-		
+
 		if (request.getSession().getAttribute("userId") != null) {
 			long userId = (long) request.getSession().getAttribute("userId");
 			User user = UserManager.getInstance().getUserById(userId);
 
-			if(request.getServletPath().contains("browse")) {
+			if (request.getServletPath().contains("browse")) {
 				Collection<Bookmark> books = BookmarkManager.getInstance().getBookmarks(Book.class, false, userId);
 				Collection<Bookmark> movies = BookmarkManager.getInstance().getBookmarks(Movie.class, false, userId);
-				Collection<Bookmark> weblinks = BookmarkManager.getInstance().getBookmarks(Weblink.class, false, userId);
+				Collection<Bookmark> weblinks = BookmarkManager.getInstance().getBookmarks(Weblink.class, false,
+						userId);
 				request.setAttribute("books", books);
 				request.setAttribute("movies", movies);
 				request.setAttribute("weblinks", weblinks);
 				dispatcher = request.getRequestDispatcher("/Browse.jsp");
-			}	
-			
-			else if (request.getServletPath().contains("save")) {
-				Bookmark bookmark = BookmarkManager.getInstance()
-						.getBookById(Long.parseLong(request.getParameter("bid")));
-				BookmarkManager.getInstance().saveUserBookmark(user, bookmark);
-			} else if (request.getServletPath().contains("delete")) {
-				Bookmark bookmark = BookmarkManager.getInstance()
-						.getBookById(Long.parseLong(request.getParameter("bid")));
-				BookmarkManager.getInstance().deleteUserBookmark(user, bookmark);
+			} else {
+				Bookmark bookmark = null;
+				if (request.getParameter("bid") != null) {
+					bookmark = BookmarkManager.getInstance().getBookById(Long.parseLong(request.getParameter("bid")));
+				}
+
+				else if (request.getParameter("mid") != null) {
+					bookmark = BookmarkManager.getInstance().getMovieById(Long.parseLong(request.getParameter("mid")));
+				} else {
+					bookmark = BookmarkManager.getInstance()
+							.getWeblinkById(Long.parseLong(request.getParameter("wid")));
+				}
+
+				if (request.getServletPath().contains("save")) {
+
+					BookmarkManager.getInstance().saveUserBookmark(user, bookmark);
+				}
+
+				else {
+					BookmarkManager.getInstance().deleteUserBookmark(user, bookmark);
+				}
+
 			}
 
 		}
@@ -80,7 +93,7 @@ public class BookmarkController extends HttpServlet {
 		else {
 			request.getRequestDispatcher("/Login.jsp");
 		}
-		
+
 		dispatcher.forward(request, response);
 	}
 

@@ -138,7 +138,7 @@ public class DataStore {
 			double imdbRating = rs.getDouble("imdb_rating");
 
 		//	System.out.println("[NEW MOVIE] id " + id + "title " + title + "release year " + releaseYear + "cast " + cast.toString());
-			Bookmark bookmark = BookmarkManager.getInstance().createMovie(id, title, "", releaseYear, cast, directors,
+			Bookmark bookmark = BookmarkManager.getInstance().createMovie(id, title, "", "", releaseYear, cast, directors,
 					genre, imdbRating/* , values[7] */);
 			bookmarkList.add(bookmark);
 		}

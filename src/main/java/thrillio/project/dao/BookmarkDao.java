@@ -125,13 +125,13 @@ public class BookmarkDao {
 	}
 
 	private void deleteUser_Weblink(UserBookmark userBookmark, Statement stmt) throws SQLException {
-		String query = "DELETE FROM user_weblink where user_id = " + userBookmark.getUser().getId() + " AND book_id = "
+		String query = "DELETE FROM user_weblink where user_id = " + userBookmark.getUser().getId() + " AND weblink_id = "
 				+ userBookmark.getBookmark().getId();
 		stmt.executeUpdate(query);
 	}
 
 	private void deleteUser_Movie(UserBookmark userBookmark, Statement stmt) throws SQLException {
-		String query = "DELETE FROM user_movie where user_id = " + userBookmark.getUser().getId() + " AND book_id = "
+		String query = "DELETE FROM user_movie where user_id = " + userBookmark.getUser().getId() + " AND movie_id = "
 				+ userBookmark.getBookmark().getId();
 		stmt.executeUpdate(query);
 
@@ -160,8 +160,7 @@ public class BookmarkDao {
 		return result;
 	}
 
-	public Collection<Bookmark> getBookmarks(Class<? extends Bookmark> classType,
-			boolean isBookmarked, long userId) {
+	public Collection<Bookmark> getBookmarks(Class<? extends Bookmark> classType, boolean isBookmarked, long userId) {
 		Collection<Bookmark> result = new ArrayList<>();
 
 		try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jid_thrillio", "root",
@@ -171,7 +170,7 @@ public class BookmarkDao {
 				result.addAll(getBooks(isBookmarked, userId, stmt));
 			} else if (classType.getCanonicalName().equals(Movie.class.getCanonicalName())) {
 				result.addAll(getMovies(isBookmarked, userId, stmt));
-			} else if (classType.getCanonicalName().equals(Weblink.class.getCanonicalName())){
+			} else if (classType.getCanonicalName().equals(Weblink.class.getCanonicalName())) {
 				result.addAll(getWeblinks(isBookmarked, userId, stmt));
 			}
 
@@ -216,8 +215,9 @@ public class BookmarkDao {
 		}
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {
-			movies.add(BookmarkManager.getInstance().createMovie(rs.getLong(1), rs.getString(2), null, rs.getInt(3),
-					null, null, MovieGenre.values()[rs.getInt(4)], rs.getDouble(5)));
+			movies.add(BookmarkManager.getInstance().createMovie(rs.getLong(1), rs.getString(2), rs.getString(3), null,
+					rs.getInt(4), null, null, MovieGenre.values()[rs.getInt(5)], rs.getDouble(6)));
+			System.out.println("movieUrl: " + rs.getString(3));
 		}
 		return movies;
 
@@ -339,6 +339,45 @@ public class BookmarkDao {
 		}
 
 		return weblinksNotAttempted;
+	}
+
+	public Bookmark getMovieById(long movieId) {
+
+		Bookmark movie = new Movie();
+
+		try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jid_thrillio", "root",
+				"rootpassword"); Statement stmt = conn.createStatement()) {
+			String query = "SELECT * from movie where id = " + movieId;
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+
+				movie = BookmarkManager.getInstance().createMovie(rs.getLong(1), rs.getString(2), rs.getString(3), null,
+						rs.getInt(4), null, null, MovieGenre.values()[rs.getInt(5)], rs.getDouble(6));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return movie;
+	}
+
+	public Bookmark getWeblinkById(long weblinkId) {
+
+		Bookmark weblink = new Weblink();
+
+		try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jid_thrillio", "root",
+				"rootpassword"); Statement stmt = conn.createStatement()) {
+			String query = "SELECT * from movie where id = " + weblinkId;
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+
+				weblink = BookmarkManager.getInstance().createWebLink(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return weblink;
 	}
 
 }

@@ -9,8 +9,7 @@
 <body style="font-family: Arial; font-size: 20px;">
 	<div
 		style="height: 65px; align: center; background: #DB5227; font-family: Arial; color: white;"">
-		<br>
-		<b> <a href=""
+		<br> <b> <a href=""
 			style="font-family: garamond; font-size: 34px; margin: 0px 0px 0px 10px; color: white; text-decoration: none;">thrill.io</a></b>
 		<div
 			style="height: 25px; background: #DB5227; font-family: Arial; color: white;">
@@ -24,32 +23,7 @@
 	</div>
 	<br>
 	<br>
-	<c:if test="${!empty(movies)}">
-		<h1>Movies</h1>
-		<table>
-			<c:forEach var="movie" items="${movies}">
-				<tr>
-					<td>${movie.title}</td>
-				</tr>
-
-				<tr>
-					<td>${movie.genre}</td>
-				</tr>
-				<tr>
-					<td>${movie.releaseYear}</td>
-				</tr>
-				<tr>
-					<td>${movie.imdbRating}</td>
-				</tr>
-				<td>
-				<a
-					href="<%=request.getContextPath()%>/bookmark/save?bid=${movie.id}"
-					style="font-size: 18px; color: #0058A6; font-weight: bold; text-decoration: none">Save</a>
-			</td>
-			</c:forEach>
-			
-		</table>
-	</c:if>
+	<h1>Books</h1>
 
 	<table>
 		<c:forEach var="book" items="${books}">
@@ -58,12 +32,9 @@
 				</td>
 
 				<td style="color: gray;">By <span style="color: #B13100;">${book.authors[0]}</span>
-					<br>
-				<br> Rating: <span style="color: #B13100;">${book.amazonRating}</span>
-					<br>
-				<br> Publication Year: <span style="color: #B13100;">${book.publicationYear}</span>
-					<br>
-				<br> <a
+					<br> <br> Rating: <span style="color: #B13100;">${book.amazonRating}</span>
+					<br> <br> Publication Year: <span style="color: #B13100;">${book.publicationYear}</span>
+					<br> <br> <a
 					href="<%=request.getContextPath()%>/bookmark/save?bid=${book.id}"
 					style="font-size: 18px; color: #0058A6; font-weight: bold; text-decoration: none">Save</a>
 				</td>
@@ -73,9 +44,48 @@
 			</tr>
 
 		</c:forEach>
+	</table>
+	<h1>Movies</h1>
+	<table>
+		<c:forEach var="movie" items="${movies}">
+			<tr>
+				<td><img src="${movie.imageUrl}" width="175" height="200">
+				</td>
 
+				<td style="color: gray;">By <span style="color: #B13100;">${movie.title}</span>
+					<br> <br> Rating: <span style="color: #B13100;">${movie.imdbRating}</span>
+					<br> <br> Publication Year: <span style="color: #B13100;">${movie.releaseYear}</span>
+					<br> <br> <a
+					href="<%=request.getContextPath()%>/bookmark/save?mid=${movie.id}"
+					style="font-size: 18px; color: #0058A6; font-weight: bold; text-decoration: none">Save</a>
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+			</tr>
 
+		</c:forEach>
 	</table>
 
+	<h1>Weblinks</h1>
+	<table>
+		<c:forEach var="weblink" items="${weblinks}">
+			<tr>
+				<td style="color: gray;">Host: <span style="color: #B13100;">${weblink.host}</span>
+					<br> <br> Title: <span style="color: #B13100;">${weblink.title}</span>
+					<br> <br> Url: <a href="${weblink.url}" style="color: #B13100;">${weblink.url}</a>
+					<br> <br> <a
+					href="<%=request.getContextPath()%>/bookmark/save?wid=${weblink.id}"
+					style="font-size: 18px; color: #0058A6; font-weight: bold; text-decoration: none">Save</a>
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+			</tr>
+
+		</c:forEach>
+	</table>
+	
 </body>
 </html>

@@ -6,6 +6,7 @@ import thrillio.project.constants.MovieGenre;
 
 public class Movie extends Bookmark{
 
+	private String imageUrl;
 	private int releaseYear;
 	private String[] cast;
 	private String[] directors;
@@ -64,6 +65,14 @@ public class Movie extends Bookmark{
 			return false;
 		}
 		return true;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 }

@@ -41,12 +41,13 @@ public class BookmarkManager {
 		return book;
 	}
 
-	public Movie createMovie(long id, String title, String profileUrl, int releaseYear, String cast[],
+	public Movie createMovie(long id, String title, String imageUrl, String profileUrl, int releaseYear, String cast[],
 			String[] directors, MovieGenre genre, double imdbRating) {
 
 		Movie movie = new Movie();
 		movie.setId(id);
 		movie.setTitle(title);
+		movie.setImageUrl(imageUrl);
 		movie.setProfileUrl(profileUrl);
 		movie.setReleaseYear(releaseYear);
 		movie.setCast(cast);
@@ -105,6 +106,14 @@ public class BookmarkManager {
 
 	public Bookmark getBookById(long bookId) {
 		return dao.getBookById(bookId);
+	}
+
+	public Bookmark getMovieById(long movieId) {
+		return dao.getMovieById(movieId);
+	}
+
+	public Bookmark getWeblinkById(long weblinkId) {
+		return dao.getWeblinkById(weblinkId);
 	}
 
 }
