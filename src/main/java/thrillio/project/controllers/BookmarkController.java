@@ -14,11 +14,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import thrillio.project.constants.KidFriendlyStatus;
 import thrillio.project.entities.Book;
 import thrillio.project.entities.Bookmark;
+import thrillio.project.entities.Movie;
 import thrillio.project.entities.User;
+import thrillio.project.entities.Weblink;
 import thrillio.project.managers.BookmarkManager;
 import thrillio.project.managers.UserManager;
 
-@WebServlet(urlPatterns = { "/bookmark", "/bookmark/mybooks", "/bookmark/save", "/bookmark/delete"})
+@WebServlet(urlPatterns = { "/browse", "/bookmark/save", "/bookmark/delete" })
 public class BookmarkController extends HttpServlet {
 	/*
 	 * private BookmarkController() {}
@@ -47,45 +49,39 @@ public class BookmarkController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/bookmarks");
+		
 		if (request.getSession().getAttribute("userId") != null) {
 			long userId = (long) request.getSession().getAttribute("userId");
 			User user = UserManager.getInstance().getUserById(userId);
-			Collection<Bookmark> books =  BookmarkManager.getInstance().getBookmarks(Book.class, false, userId);
-			RequestDispatcher dispatcher = request.getRequestDispatcher("");
-			
-			if (request.getServletPath().contains("save")) {
 
+			if(request.getServletPath().contains("browse")) {
+				Collection<Bookmark> books = BookmarkManager.getInstance().getBookmarks(Book.class, false, userId);
+				Collection<Bookmark> movies = BookmarkManager.getInstance().getBookmarks(Movie.class, false, userId);
+				Collection<Bookmark> weblinks = BookmarkManager.getInstance().getBookmarks(Weblink.class, false, userId);
+				request.setAttribute("books", books);
+				request.setAttribute("movies", movies);
+				request.setAttribute("weblinks", weblinks);
+				dispatcher = request.getRequestDispatcher("/Browse.jsp");
+			}	
+			
+			else if (request.getServletPath().contains("save")) {
 				Bookmark bookmark = BookmarkManager.getInstance()
 						.getBookById(Long.parseLong(request.getParameter("bid")));
 				BookmarkManager.getInstance().saveUserBookmark(user, bookmark);
-				books = BookmarkManager.getInstance().getBookmarks(Book.class, true, userId);
-				dispatcher = request.getRequestDispatcher("/MyBooks.jsp");
-
 			} else if (request.getServletPath().contains("delete")) {
 				Bookmark bookmark = BookmarkManager.getInstance()
 						.getBookById(Long.parseLong(request.getParameter("bid")));
 				BookmarkManager.getInstance().deleteUserBookmark(user, bookmark);
-				books = BookmarkManager.getInstance().getBookmarks(Book.class, true, userId);
-				dispatcher = request.getRequestDispatcher("/MyBooks.jsp");
 			}
 
-			else if (request.getServletPath().contains("mybooks")) {
-				books = BookmarkManager.getInstance().getBookmarks(Book.class, true, userId);
-
-				dispatcher = request.getRequestDispatcher("/MyBooks.jsp");
-
-			} else {
-				books = BookmarkManager.getInstance().getBookmarks(Book.class, false, userId);
-				dispatcher = request.getRequestDispatcher("/Browse.jsp");
-			}
-			request.setAttribute("books", books);
-			dispatcher.forward(request, response);
 		}
 
 		else {
-			request.getRequestDispatcher("/Login.jsp").forward(request, response);
+			request.getRequestDispatcher("/Login.jsp");
 		}
+		
+		dispatcher.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

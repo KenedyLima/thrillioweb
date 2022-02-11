@@ -188,7 +188,7 @@ public class BookmarkDao {
 		String query = "";
 
 		if (isBookmarked) {
-			query = "SELECT * from weblink wb, where wb.id IN (SELECT weblink_id from user_weblink where user_id = "
+			query = "SELECT * from weblink wb where wb.id IN (SELECT weblink_id from user_weblink where user_id = "
 					+ userId + ")";
 		} else {
 			query = "SELECT * from weblink wb where wb.id NOT IN (SELECT weblink_id from user_weblink where user_id = "
@@ -216,7 +216,7 @@ public class BookmarkDao {
 		}
 		ResultSet rs = stmt.executeQuery(query);
 		while (rs.next()) {
-			movies.add(BookmarkManager.getInstance().createMovie(rs.getLong(1), rs.getString(0), null, rs.getInt(3),
+			movies.add(BookmarkManager.getInstance().createMovie(rs.getLong(1), rs.getString(2), null, rs.getInt(3),
 					null, null, MovieGenre.values()[rs.getInt(4)], rs.getDouble(5)));
 		}
 		return movies;

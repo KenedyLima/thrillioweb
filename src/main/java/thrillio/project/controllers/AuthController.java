@@ -29,7 +29,7 @@ public class AuthController extends HttpServlet {
 
 				HttpSession session = request.getSession();
 				session.setAttribute("userId", userId);
-				request.getRequestDispatcher("bookmark/mybooks").forward(request, response);
+				request.getRequestDispatcher("bookmarks").forward(request, response);
 
 			} else {
 				request.getRequestDispatcher("/Login.jsp").forward(request, response);
