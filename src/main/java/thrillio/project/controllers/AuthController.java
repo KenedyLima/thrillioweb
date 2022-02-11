@@ -19,7 +19,7 @@ public class AuthController extends HttpServlet {
 			throws ServletException, IOException {
 
 		
-		if (!request.getServletPath().contains("logout")) {
+		if (!request.getServletPath().contains("logout") && request.getParameter("password") != null) {
 			String email = request.getParameter("email");
 			
 			String password = request.getParameter("password");
